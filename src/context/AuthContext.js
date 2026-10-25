@@ -2,8 +2,17 @@ import React, { createContext, useState, useContext } from 'react';
 
 const AuthContext = createContext();
 
+const readStoredUser = () => {
+  try {
+    const raw = localStorage.getItem('user');
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    return null;
+  }
+};
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
+  const [user, setUser] = useState(readStoredUser());
   const [token, setToken] = useState(localStorage.getItem('token') || null);
 
   const login = (userData, tokenData) => {
@@ -18,6 +27,7 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+    localStorage.removeItem('profileData');
   };
 
   return (
